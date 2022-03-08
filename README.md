@@ -4,7 +4,7 @@ this package is just modif some func to my service
 # Add Features
 - Install this version  
 ``bash
-    go get github.com/faozimipa/authority
+   go get github.com/faozimipa/authority
 ```
 - Use UUID for user_id
 - Get User Permisiions
