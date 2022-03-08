@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/faozimipa/authority"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -168,32 +169,33 @@ func TestAssignRole(t *testing.T) {
 	})
 
 	// first create a role
+	id := uuid.New()
 	err := auth.CreateRole("role-a")
 	if err != nil {
 		t.Error("unexpected error while creating role to be assigned.", err)
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// double assign the role
-	err = auth.AssignRole(1, "role-a")
+	err = auth.AssignRole(id, "role-a")
 	if err == nil {
 		t.Error("expecting an error when assign a role to user more than one time")
 	}
 
 	// assign a second role
 	auth.CreateRole("role-b")
-	err = auth.AssignRole(1, "role-b")
+	err = auth.AssignRole(id, "role-b")
 	if err != nil {
 		t.Error("un expected error when assigning a second role. ", err)
 	}
 
 	// assign missing role
-	err = auth.AssignRole(1, "role-aa")
+	err = auth.AssignRole(id, "role-aa")
 	if err == nil {
 		t.Error("expecting an error when assigning role to a user")
 	}
@@ -224,13 +226,15 @@ func TestCheckRole(t *testing.T) {
 		t.Error("unexpected error while creating role to be assigned.", err)
 	}
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	id := uuid.New()
+	id2 := uuid.New()
+	err = auth.AssignRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// assert
-	ok, err := auth.CheckRole(1, "role-a")
+	ok, err := auth.CheckRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while checking user for assigned role.", err)
 	}
@@ -239,13 +243,13 @@ func TestCheckRole(t *testing.T) {
 	}
 
 	// check aa missing role
-	_, err = auth.CheckRole(1, "role-aa")
+	_, err = auth.CheckRole(id, "role-aa")
 	if err == nil {
 		t.Error("expecting an error when checking a missing role")
 	}
 
 	// check a missing user
-	ok, _ = auth.CheckRole(11, "role-a")
+	ok, _ = auth.CheckRole(id2, "role-a")
 	if ok {
 		t.Error("expecting false when checking missing role")
 	}
@@ -269,6 +273,7 @@ func TestCheckPermission(t *testing.T) {
 		t.Error("unexpected error while creating role.", err)
 	}
 
+	id := uuid.New()
 	//create permissions
 	err = auth.CreatePermission("permission-a")
 	if err != nil {
@@ -286,7 +291,7 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// test when no role is a ssigned
-	ok, err := auth.CheckPermission(1, "permission-a")
+	ok, err := auth.CheckPermission(id, "permission-a")
 	if err != nil {
 		t.Error("expecting error to be nil when no role is assigned")
 	}
@@ -295,13 +300,14 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	id3 := uuid.New()
+	err = auth.AssignRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// test a permission of an assigned role
-	ok, err = auth.CheckPermission(1, "permission-a")
+	ok, err = auth.CheckPermission(id, "permission-a")
 	if err != nil {
 		t.Error("unexpected error while checking permission of a user.", err)
 	}
@@ -310,20 +316,20 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// check when user does not have roles
-	ok, _ = auth.CheckPermission(111, "permission-a")
+	ok, _ = auth.CheckPermission(id3, "permission-a")
 	if ok {
 		t.Error("expecting an false when checking permission of not assigned  user")
 	}
 
 	// test assigning missing permission
-	_, err = auth.CheckPermission(1, "permission-aa")
+	_, err = auth.CheckPermission(id, "permission-aa")
 	if err == nil {
 		t.Error("expecting an error when checking a missing permission")
 	}
 
 	// check for an exist but not assigned permission
 	auth.CreatePermission("permission-c")
-	ok, _ = auth.CheckPermission(1, "permission-c")
+	ok, _ = auth.CheckPermission(id, "permission-c")
 	if ok {
 		t.Error("expecting false when checking for not assigned permissions")
 	}
@@ -418,18 +424,20 @@ func TestRevokeRole(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	id := uuid.New()
+
+	err = auth.AssignRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	//test
-	err = auth.RevokeRole(1, "role-a")
+	err = auth.RevokeRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error revoking user role.", err)
 	}
 	// revoke missing role
-	err = auth.RevokeRole(1, "role-aa")
+	err = auth.RevokeRole(id, "role-aa")
 	if err == nil {
 		t.Error("expecting error when revoking a missing role")
 	}
@@ -474,25 +482,28 @@ func TestRevokePermission(t *testing.T) {
 	}
 
 	// assign the role
-	err = auth.AssignRole(1, "role-a")
+	id := uuid.New()
+	id2 := uuid.New()
+
+	err = auth.AssignRole(id, "role-a")
 	if err != nil {
 		t.Error("unexpected error while assigning role.", err)
 	}
 
 	// case: user not assigned role
-	err = auth.RevokePermission(11, "permission-a")
+	err = auth.RevokePermission(id2, "permission-a")
 	if err != nil {
 		t.Error("expecting error to be nil", err)
 	}
 
 	// test
-	err = auth.RevokePermission(1, "permission-a")
+	err = auth.RevokePermission(id, "permission-a")
 	if err != nil {
 		t.Error("unexpected error while revoking role permissions.", err)
 	}
 
 	// revoke missing permissin
-	err = auth.RevokePermission(1, "permission-aa")
+	err = auth.RevokePermission(id, "permission-aa")
 	if err == nil {
 		t.Error("expecting error when revoking a missing permission")
 	}
@@ -643,12 +654,14 @@ func TestDeleteRole(t *testing.T) {
 	}
 
 	// test delete an assigned role
-	auth.AssignRole(1, "role-a")
+	id := uuid.New()
+
+	auth.AssignRole(id, "role-a")
 	err = auth.DeleteRole("role-a")
 	if err == nil {
 		t.Error("expecting an error when deleting an assigned role")
 	}
-	auth.RevokeRole(1, "role-a")
+	auth.RevokeRole(id, "role-a")
 
 	err = auth.DeleteRole("role-a")
 	if err != nil {
@@ -713,12 +726,14 @@ func TestGetUserRoles(t *testing.T) {
 	})
 
 	// first create a role
+	id := uuid.New()
+
 	auth.CreateRole("role-a")
 	auth.CreateRole("role-b")
-	auth.AssignRole(1, "role-a")
-	auth.AssignRole(1, "role-b")
+	auth.AssignRole(id, "role-a")
+	auth.AssignRole(id, "role-b")
 
-	roles, _ := auth.GetUserRoles(1)
+	roles, _ := auth.GetUserRoles(id)
 	if len(roles) != 2 {
 		t.Error("expeting two roles to be returned")
 	}
@@ -731,7 +746,7 @@ func TestGetUserRoles(t *testing.T) {
 		t.Error("missing role in returned roles")
 	}
 
-	db.Where("user_id = ?", 1).Delete(authority.UserRole{})
+	db.Where("user_id = ?", id).Delete(authority.UserRole{})
 	db.Where("name = ?", "role-a").Delete(authority.Role{})
 	db.Where("name = ?", "role-b").Delete(authority.Role{})
 }
