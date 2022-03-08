@@ -265,6 +265,35 @@ func (a *Authority) CheckRolePermission(roleName string, permName string) (bool,
 	return true, nil
 }
 
+func (a *Authority) GetUserPermissions(userID uuid.UUID) ([]string, error) {
+	var result []string
+
+	var userRoles []UserRole
+	a.DB.Where("user_id = ?", userID).Find(&userRoles)
+
+	var roleIDs []uint
+	for _, r := range userRoles {
+		roleIDs = append(roleIDs, r.RoleID)
+	}
+
+	// find the role permissions
+	var rolePermissions []RolePermission
+	resTwo := a.DB.Where("role_id IN (?)", roleIDs).Find(&rolePermissions)
+	if resTwo.Error != nil {
+		return result, nil
+	}
+
+	for _, r := range rolePermissions {
+		var permission Permission
+		res := a.DB.Where("id = ?", r.PermissionID).First(&permission)
+		if res.Error == nil {
+			result = append(result, permission.Name)
+		}
+	}
+
+	return result, nil
+}
+
 // RevokeRole revokes a user's role
 // it returns a error in case of any
 func (a *Authority) RevokeRole(userID uuid.UUID, roleName string) error {

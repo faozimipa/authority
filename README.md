@@ -3,6 +3,10 @@ Main repo is [authority](https://github.com/harranali/authority) by harranali.
 this package is just modif some func to my service
 # Add Features
 - Use UUID for user_id
+- Get Users Permisiion
+```go
+    permissions, err := auth.GetUserPermissions(user_id)
+```
 # Authority
 
 ![Build Status](https://github.com/harranali/authority/actions/workflows/build-main.yml/badge.svg)
