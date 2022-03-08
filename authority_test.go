@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/harranali/authority"
+	"github.com/faozimipa/authority"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
