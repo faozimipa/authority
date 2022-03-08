@@ -2,8 +2,12 @@
 Main repo is [authority](https://github.com/harranali/authority) by harranali.
 this package is just modif some func to my service
 # Add Features
+- Install this version  
+``bash
+    go get github.com/faozimipa/authority
+```
 - Use UUID for user_id
-- Get Users Permisiion
+- Get User Permisiions
 ```go
     permissions, err := auth.GetUserPermissions(user_id)
 ```
