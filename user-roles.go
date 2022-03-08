@@ -1,9 +1,13 @@
 package authority
 
+import (
+	"github.com/google/uuid"
+)
+
 // UserRole represents the relationship between users and roles
 type UserRole struct {
 	ID     uint
-	UserID uint
+	UserID uuid.UUID
 	RoleID uint
 }
 
