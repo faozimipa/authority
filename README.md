@@ -4,7 +4,7 @@ this package is just modif some func to my service
 # Add Features
 - Install this version  
 
-``bash
+```bash
 go get github.com/faozimipa/authority
 ```
 
