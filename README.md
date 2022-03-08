@@ -9,7 +9,7 @@ go get github.com/faozimipa/authority
 ```
 
 - Use UUID for user_id
-- Get User Permisiions
+- Get User Permissions
 ```go
     permissions, err := auth.GetUserPermissions(user_id)
 ```
