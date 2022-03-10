@@ -475,6 +475,32 @@ func (a *Authority) DeletePermission(permName string) error {
 	return nil
 }
 
+func (a *Authority) UpdateRole(roleID uint, NewRoleName string) error {
+	var role Role
+	res := a.DB.Where("id = ?", roleID).Find(&role)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil
+		}
+	}
+	role.Name = NewRoleName
+	a.DB.Model(&role).Updates(&role)
+	return nil
+}
+
+func (a *Authority) UpdatePermission(permissionID uint, NewPermissionName string) error {
+	var permission Permission
+	res := a.DB.Where("id = ?", permissionID).Find(&permission)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil
+		}
+	}
+	permission.Name = NewPermissionName
+	a.DB.Model(&permission).Updates(&permission)
+	return nil
+}
+
 func migrateTables(db *gorm.DB) {
 	db.AutoMigrate(&Role{})
 	db.AutoMigrate(&Permission{})

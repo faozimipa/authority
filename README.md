@@ -13,6 +13,15 @@ go get github.com/faozimipa/authority
 ```go
     permissions, err := auth.GetUserPermissions(user_id)
 ```
+- Update Role Name
+```go
+    err := auth.UpdateRole(1, "new-role-name")
+```
+- Update Permission Name
+```go
+    err : auth.UpdatePermission(1, "new-permission-name")
+```
+        
 # Authority
 
 ![Build Status](https://github.com/harranali/authority/actions/workflows/build-main.yml/badge.svg)
