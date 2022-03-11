@@ -19,10 +19,17 @@ go get github.com/faozimipa/authority
 ```
 - Update Permission Name
 ```go
-    err : auth.UpdatePermission(1, "new-permission-name", "a description permission")
+    err := auth.UpdatePermission(1, "new-permission-name", "a description permission")
 ```
 - Add Descriptions Role & Permissions
-        
+- Add get Real Roles Data
+```go
+    res,err := auth.GetRolesData()
+```
+- Add get Real Permissions Data 
+```go
+    res,err := auth.GetPermissionsData()
+```        
 # Authority
 
 ![Build Status](https://github.com/harranali/authority/actions/workflows/build-main.yml/badge.svg)

@@ -387,6 +387,12 @@ func (a *Authority) GetRoles() ([]string, error) {
 	return result, nil
 }
 
+func (a *Authority) GetRolesData() ([]Role, error) {
+	var roles []Role
+	a.DB.Find(&roles)
+	return roles, nil
+}
+
 // GetUserRoles returns all user assigned roles
 func (a *Authority) GetUserRoles(userID uuid.UUID) ([]string, error) {
 	var result []string
@@ -416,6 +422,12 @@ func (a *Authority) GetPermissions() ([]string, error) {
 	}
 
 	return result, nil
+}
+
+func (a *Authority) GetPermissionsData() ([]Permission, error) {
+	var perms []Permission
+	a.DB.Find(&perms)
+	return perms, nil
 }
 
 // DeleteRole deletes a given role
