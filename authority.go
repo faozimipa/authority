@@ -475,7 +475,7 @@ func (a *Authority) DeletePermission(permName string) error {
 	return nil
 }
 
-func (a *Authority) UpdateRole(roleID uint, NewRoleName string) error {
+func (a *Authority) UpdateRole(roleID uint, NewRoleName string, NewDesc string) error {
 	var role Role
 	res := a.DB.Where("id = ?", roleID).Find(&role)
 	if res.Error != nil {
@@ -484,11 +484,12 @@ func (a *Authority) UpdateRole(roleID uint, NewRoleName string) error {
 		}
 	}
 	role.Name = NewRoleName
+	role.Description = NewDesc
 	a.DB.Model(&role).Updates(&role)
 	return nil
 }
 
-func (a *Authority) UpdatePermission(permissionID uint, NewPermissionName string) error {
+func (a *Authority) UpdatePermission(permissionID uint, NewPermissionName string, NewDesc string) error {
 	var permission Permission
 	res := a.DB.Where("id = ?", permissionID).Find(&permission)
 	if res.Error != nil {
@@ -497,6 +498,7 @@ func (a *Authority) UpdatePermission(permissionID uint, NewPermissionName string
 		}
 	}
 	permission.Name = NewPermissionName
+	permission.Description = NewDesc
 	a.DB.Model(&permission).Updates(&permission)
 	return nil
 }

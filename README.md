@@ -15,11 +15,11 @@ go get github.com/faozimipa/authority
 ```
 - Update Role Name
 ```go
-    err := auth.UpdateRole(1, "new-role-name")
+    err := auth.UpdateRole(1, "new-role-name", "a description roles")
 ```
 - Update Permission Name
 ```go
-    err : auth.UpdatePermission(1, "new-permission-name")
+    err : auth.UpdatePermission(1, "new-permission-name", "a description permission")
 ```
 - Add Descriptions Role & Permissions
         
