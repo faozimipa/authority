@@ -49,13 +49,13 @@ func Resolve() *Authority {
 // CreateRole stores a role in the database
 // it accepts the role name. it returns an error
 // in case of any
-func (a *Authority) CreateRole(roleName string) error {
+func (a *Authority) CreateRole(roleName string, description string) error {
 	var dbRole Role
 	res := a.DB.Where("name = ?", roleName).First(&dbRole)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			// create
-			a.DB.Create(&Role{Name: roleName})
+			a.DB.Create(&Role{Name: roleName, Description: description})
 			return nil
 		}
 	}
@@ -66,13 +66,13 @@ func (a *Authority) CreateRole(roleName string) error {
 // CreatePermission stores a permission in the database
 // it accepts the permission name. it returns an error
 // in case of any
-func (a *Authority) CreatePermission(permName string) error {
+func (a *Authority) CreatePermission(permName string, desciption string) error {
 	var dbPerm Permission
 	res := a.DB.Where("name = ?", permName).First(&dbPerm)
 	if res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			// create
-			a.DB.Create(&Permission{Name: permName})
+			a.DB.Create(&Permission{Name: permName, Description: desciption})
 			return nil
 		}
 	}

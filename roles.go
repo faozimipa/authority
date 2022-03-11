@@ -2,8 +2,9 @@ package authority
 
 // Role represents the database model of roles
 type Role struct {
-	ID   uint
-	Name string
+	ID          uint
+	Name        string
+	Description string
 }
 
 // TableName sets the table name

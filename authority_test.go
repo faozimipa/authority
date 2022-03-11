@@ -46,7 +46,7 @@ func TestCreateRole(t *testing.T) {
 	})
 
 	// test create role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "description role a")
 	if err != nil {
 		t.Error("an error was not expected while creating role ", err)
 	}
@@ -61,9 +61,9 @@ func TestCreateRole(t *testing.T) {
 	}
 
 	// test duplicated entries
-	auth.CreateRole("role-a")
-	auth.CreateRole("role-a")
-	auth.CreateRole("role-a")
+	auth.CreateRole("role-a", "a description role")
+	auth.CreateRole("role-a", "a description role")
+	auth.CreateRole("role-a", "a description role")
 	db.Model(authority.Role{}).Where("name = ?", "role-a").Count(&c)
 	if c > 1 {
 		t.Error("unexpected duplicated entries for role")
@@ -80,7 +80,7 @@ func TestCreatePermission(t *testing.T) {
 	})
 
 	// test create permission
-	err := auth.CreatePermission("permission-a")
+	err := auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("an error was not expected while creating permision ", err)
 	}
@@ -95,9 +95,9 @@ func TestCreatePermission(t *testing.T) {
 	}
 
 	// test duplicated entries
-	auth.CreatePermission("permission-a")
-	auth.CreatePermission("permission-a")
-	auth.CreatePermission("permission-a")
+	auth.CreatePermission("permission-a", "a description permission")
+	auth.CreatePermission("permission-a", "a description permission")
+	auth.CreatePermission("permission-a", "a description permission")
 	db.Model(authority.Role{}).Where("name = ?", "permission-a").Count(&c)
 	if c > 1 {
 		t.Error("unexpected duplicated entries for permission")
@@ -114,17 +114,17 @@ func TestAssignPermission(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
 
 	// second test create permissions
-	err = auth.CreatePermission("permission-a")
+	err = auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
@@ -170,7 +170,7 @@ func TestAssignRole(t *testing.T) {
 
 	// first create a role
 	id := uuid.New()
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role to be assigned.", err)
 	}
@@ -188,7 +188,7 @@ func TestAssignRole(t *testing.T) {
 	}
 
 	// assign a second role
-	auth.CreateRole("role-b")
+	auth.CreateRole("role-b", "a description role")
 	err = auth.AssignRole(id, "role-b")
 	if err != nil {
 		t.Error("un expected error when assigning a second role. ", err)
@@ -221,7 +221,7 @@ func TestCheckRole(t *testing.T) {
 	})
 
 	// first create a role and assign it to a user
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role to be assigned.", err)
 	}
@@ -268,18 +268,18 @@ func TestCheckPermission(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
 
 	id := uuid.New()
 	//create permissions
-	err = auth.CreatePermission("permission-a")
+	err = auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
@@ -328,7 +328,7 @@ func TestCheckPermission(t *testing.T) {
 	}
 
 	// check for an exist but not assigned permission
-	auth.CreatePermission("permission-c")
+	auth.CreatePermission("permission-c", "a description permission")
 	ok, _ = auth.CheckPermission(id, "permission-c")
 	if ok {
 		t.Error("expecting false when checking for not assigned permissions")
@@ -352,17 +352,17 @@ func TestCheckRolePermission(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
 
 	// second test create permissions
-	err = auth.CreatePermission("permission-a")
+	err = auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
@@ -395,7 +395,7 @@ func TestCheckRolePermission(t *testing.T) {
 	}
 
 	// check with not assigned permission
-	auth.CreatePermission("permission-c")
+	auth.CreatePermission("permission-c", "a description permission")
 	ok, _ = auth.CheckRolePermission("role-a", "permission-c")
 	if ok {
 		t.Error("expecting false when checking a missing permission")
@@ -418,7 +418,7 @@ func TestRevokeRole(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
@@ -461,16 +461,16 @@ func TestRevokePermission(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
 	// second test create permissions
-	err = auth.CreatePermission("permission-a")
+	err = auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
@@ -532,16 +532,16 @@ func TestRevokeRolePermission(t *testing.T) {
 	})
 
 	// first create a role
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
 	// second test create permissions
-	err = auth.CreatePermission("permission-a")
+	err = auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission to be assigned.", err)
 	}
@@ -591,11 +591,11 @@ func TestGetRoles(t *testing.T) {
 	})
 
 	// first create roles
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
-	err = auth.CreateRole("role-b")
+	err = auth.CreateRole("role-b", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
@@ -617,11 +617,11 @@ func TestGetPermissions(t *testing.T) {
 	})
 
 	// first create permission
-	err := auth.CreatePermission("permission-a")
+	err := auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission.", err)
 	}
-	err = auth.CreatePermission("permission-b")
+	err = auth.CreatePermission("permission-b", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission.", err)
 	}
@@ -642,7 +642,7 @@ func TestDeleteRole(t *testing.T) {
 		DB:           db,
 	})
 
-	err := auth.CreateRole("role-a")
+	err := auth.CreateRole("role-a", "a description role")
 	if err != nil {
 		t.Error("unexpected error while creating role.", err)
 	}
@@ -681,7 +681,7 @@ func TestDeletePermission(t *testing.T) {
 		DB:           db,
 	})
 
-	err := auth.CreatePermission("permission-a")
+	err := auth.CreatePermission("permission-a", "a description permission")
 	if err != nil {
 		t.Error("unexpected error while creating permission.", err)
 	}
@@ -693,7 +693,7 @@ func TestDeletePermission(t *testing.T) {
 	}
 
 	// delete an assigned permission
-	auth.CreateRole("role-a")
+	auth.CreateRole("role-a", "a description role")
 	auth.AssignPermissions("role-a", []string{"permission-a"})
 
 	// delete assinged permission
@@ -728,8 +728,8 @@ func TestGetUserRoles(t *testing.T) {
 	// first create a role
 	id := uuid.New()
 
-	auth.CreateRole("role-a")
-	auth.CreateRole("role-b")
+	auth.CreateRole("role-a", "a description role")
+	auth.CreateRole("role-b", "a description role")
 	auth.AssignRole(id, "role-a")
 	auth.AssignRole(id, "role-b")
 

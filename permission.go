@@ -2,8 +2,9 @@ package authority
 
 // Permission represents the database model of permissions
 type Permission struct {
-	ID   uint
-	Name string
+	ID          uint
+	Name        string
+	Description string
 }
 
 // TableName sets the table name

@@ -21,6 +21,7 @@ go get github.com/faozimipa/authority
 ```go
     err : auth.UpdatePermission(1, "new-permission-name")
 ```
+- Add Descriptions Role & Permissions
         
 # Authority
 
@@ -81,12 +82,12 @@ auth := authority.New(authority.Options{
 })
 
 // create role
-err := auth.CreateRole("role-1")
+err := auth.CreateRole("role-1", "a description role")
 
 // create permissions
-err := auth.CreatePermission("permission-1")
-err = auth.CreatePermission("permission-2")
-err = auth.CreatePermission("permission-3")
+err := auth.CreatePermission("permission-1", "a description permission")
+err = auth.CreatePermission("permission-2", "a description permission")
+err = auth.CreatePermission("permission-3", "a description permission")
 
 // assign the permissions to the role
 err := auth.AssignPermissions("role-1", []string{
@@ -127,20 +128,20 @@ Resolve returns the initiated instance
 auth := authority.Resolve()
 ```
 
-###  func (a *Authority) CreateRole(roleName string) error
+###  func (a *Authority) CreateRole(roleName string, description string) error
 CreateRole stores a role in the database it accepts the role name. it returns an error incase of any
 ```go
 // create role
-err := auth.CreateRole("role-1")
+err := auth.CreateRole("role-1", "a description role")
 ```
 
-### func (a *Authority) CreatePermission(permName string) error
+### func (a *Authority) CreatePermission(permName string, description string) error
 CreatePermission stores a permission in the database it accepts the permission name. it returns an error in case of any
 ```go
 // create permissions
-err := auth.CreatePermission("permission-1")
-err = auth.CreatePermission("permission-2")
-err = auth.CreatePermission("permission-3")
+err := auth.CreatePermission("permission-1", "a description permission")
+err = auth.CreatePermission("permission-2", "a description permission")
+err = auth.CreatePermission("permission-3", "a description permission")
 ```
 
 
