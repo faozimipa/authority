@@ -430,6 +430,31 @@ func (a *Authority) GetPermissionsData() ([]Permission, error) {
 	return perms, nil
 }
 
+func (a *Authority) GetPermissionsByRole(roleName string) ([]string, error) {
+	var result []string
+	var role Role
+	res := a.DB.Where("name = ?", roleName).First(&role)
+	if res.Error != nil {
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return nil, ErrRoleNotFound
+		}
+
+	}
+
+	var rolePrems []RolePermission
+	a.DB.Where("role_id = ?", role.ID).Find(&rolePrems)
+
+	for _, p := range rolePrems {
+		var permission Permission
+		res := a.DB.Where("id = ?", p.PermissionID).Find(&permission)
+		if res.Error == nil {
+			result = append(result, permission.Name)
+		}
+	}
+
+	return result, nil
+}
+
 // DeleteRole deletes a given role
 // if the role is assigned to a user it returns an error
 func (a *Authority) DeleteRole(roleName string) error {

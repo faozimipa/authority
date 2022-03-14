@@ -29,7 +29,11 @@ go get github.com/faozimipa/authority
 - Add get Real Permissions Data 
 ```go
     res,err := auth.GetPermissionsData()
-```        
+```  
+- Get Permissions by Role Name
+```go
+    res,err := auth.GetPermissionsByRole("role-name")
+```      
 # Authority
 
 ![Build Status](https://github.com/harranali/authority/actions/workflows/build-main.yml/badge.svg)
