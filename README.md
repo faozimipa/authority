@@ -33,7 +33,12 @@ go get github.com/faozimipa/authority
 - Get Permissions by Role Name
 ```go
     res,err := auth.GetPermissionsByRole("role-name")
-```      
+```  
+- Add SyncAssignPermissions
+```go
+    err := auth.SyncAssignPermissions("role-name", ["permission-a", "permission-b"])
+```
+
 # Authority
 
 ![Build Status](https://github.com/harranali/authority/actions/workflows/build-main.yml/badge.svg)

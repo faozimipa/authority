@@ -130,6 +130,58 @@ func (a *Authority) AssignPermissions(roleName string, permNames []string) error
 	return nil
 }
 
+func (a *Authority) SyncAssignPermissions(roleName string, permNames []string) error {
+	tx := a.DB.Session(&gorm.Session{SkipDefaultTransaction: true})
+	// tx = a.DB.Begin()
+	// get the role id
+	var role Role
+	rRes := tx.Where("name = ?", roleName).First(&role)
+	if rRes.Error != nil {
+		if errors.Is(rRes.Error, gorm.ErrRecordNotFound) {
+			tx.Rollback()
+			return ErrRoleNotFound
+		}
+
+	}
+
+	var perms []Permission
+	// get the permissions ids
+	for _, permName := range permNames {
+		var perm Permission
+		pRes := tx.Where("name = ?", permName).First(&perm)
+		if pRes.Error != nil {
+			if errors.Is(pRes.Error, gorm.ErrRecordNotFound) {
+				tx.Rollback()
+				return ErrPermissionNotFound
+			}
+
+		}
+
+		perms = append(perms, perm)
+	}
+
+	//delete all rolespermission
+	delData := tx.Where("role_id = ?", role.ID).Delete(RolePermission{})
+
+	if delData.Error != nil {
+		tx.Rollback()
+		return delData.Error
+	}
+
+	for _, perm := range perms {
+		// assign the record
+		cRes := tx.Create(&RolePermission{RoleID: role.ID, PermissionID: perm.ID})
+		if cRes.Error != nil {
+			tx.Rollback()
+			return cRes.Error
+		}
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
 // AssignRole assigns a given role to a user
 // the first parameter is the user id, the second parameter is the role name
 // if the role name doesn't have a matching record in the data base an error is returned
